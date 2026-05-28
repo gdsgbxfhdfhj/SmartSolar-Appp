@@ -15,6 +15,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Create project structure
+        run: |
+          mkdir -p app/src/main/java/com/kasrasolar/app
+          mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/res/xml
+
       - name: Move source files into project structure
         run: |
           cp Mainactivity.JAVA app/src/main/java/com/kasrasolar/app/MainActivity.java
