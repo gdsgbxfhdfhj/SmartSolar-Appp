@@ -1,0 +1,39 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Move source files into project structure
+        run: |
+          cp Mainactivity.JAVA app/src/main/java/com/kasrasolar/app/MainActivity.java
+          cp Androidmanifest.XML app/src/main/AndroidManifest.xml
+          cp Strings.XML app/src/main/res/values/strings.xml
+          cp Styles.XML app/src/main/res/values/styles.xml
+          cp "Network security config.XML" app/src/main/res/xml/network_security_config.xml
+
+      - name: Download Gradle wrapper jar
+        run: |
+          mkdir -p gradle/wrapper
+          curl -L -o gradle/wrapper/gradle-wrapper.jar \
+            https://github.com/gradle/gradle/raw/v8.2.0/gradle/wrapper/gradle-wrapper.jar
+
+      - name: Build Debug APK
+        run: chmod +x gradlew && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: SmartSolar-APK
+          path: app/build/outputs/apk/debug/*.apk
